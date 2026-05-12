@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant - Đồ Án Quản Lý Sự Kiện</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <button class="new-chat-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>Cuộc trò chuyện mới</span>
+                </button>
+                <div class="upload-section">
+                    <input type="file" id="file-upload" accept=".pdf,.docx" style="display: none;">
+                    <button class="upload-btn" onclick="document.getElementById('file-upload').click()">
+                        <i class="fas fa-file-word"></i>
+                        <span>Tải tài liệu (PDF/DOCX)</span>
+                    </button>
+                    <div id="upload-status" class="status-text"></div>
+                </div>
+            </div>
+            <div class="chat-history">
+                <div class="history-item active">
+                    <i class="far fa-message"></i>
+                    <span>Giới thiệu đồ án</span>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">AD</div>
+                    <span>Admin Hệ Thống</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-main">
+            <header class="chat-header">
+                <div class="model-info">
+                    <span class="model-badge">Event Assistant (Local)</span>
+                </div>
+            </header>
+
+            <div class="messages-container" id="chat-messages">
+                <!-- Welcome Message -->
+                <div class="message assistant">
+                    <div class="avatar-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <p>Xin chào! Tôi là trợ lý AI cho đồ án <strong>Hệ thống quản lý sự kiện</strong>. Tôi có thể giúp gì cho bạn hôm nay?</p>
+                        <div class="suggestions">
+                            <button class="suggestion-chip">Sự kiện nào sắp diễn ra?</button>
+                            <button class="suggestion-chip">Hướng dẫn đăng ký sự kiện</button>
+                            <button class="suggestion-chip">Báo cáo thống kê</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="chat-footer">
+                <div class="input-wrapper">
+                    <textarea id="user-input" placeholder="Nhập câu hỏi tại đây..." rows="1"></textarea>
+                    <button id="send-btn" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <p class="disclaimer">AI có thể đưa ra thông tin không chính xác. Hãy kiểm tra lại các thông tin quan trọng.</p>
+            </footer>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

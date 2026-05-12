@@ -94,15 +94,22 @@ async function getDatabaseContext() {
 app.post("/chat", async (req, res) => {
   try {
     const userPrompt = req.body.prompt;
-    
-    // Fetch context from DB and PDF
-    const dbContext = await getDatabaseContext();
+    const isExtraction = userPrompt.includes("Trích xuất thông tin sự kiện") || userPrompt.includes("JSON");
     
     let fullPrompt = "";
-    if (dbContext || pdfContext) {
-        fullPrompt = `Bối cảnh hệ thống:\n${dbContext}\n${pdfContext ? "Tài liệu bổ sung:\n" + pdfContext.substring(0, 3000) : ""}\n\nCâu hỏi của người dùng: ${userPrompt}`;
-    } else {
+    if (isExtraction) {
+        // For extraction, we want the raw prompt to avoid confusing the model
         fullPrompt = userPrompt;
+        console.log("Processing Extraction Request...");
+    } else {
+        // Fetch context from DB and PDF for regular chat
+        const dbContext = await getDatabaseContext();
+        if (dbContext || pdfContext) {
+            fullPrompt = `Bối cảnh hệ thống:\n${dbContext}\n${pdfContext ? "Tài liệu bổ sung:\n" + pdfContext.substring(0, 3000) : ""}\n\nCâu hỏi của người dùng: ${userPrompt}`;
+        } else {
+            fullPrompt = userPrompt;
+        }
+        console.log("Processing General Chat Request...");
     }
 
     const response = await fetch(
@@ -115,16 +122,23 @@ app.post("/chat", async (req, res) => {
         body: JSON.stringify({
           model: "event-assistant",
           prompt: fullPrompt,
-          stream: false
+          stream: false,
+          options: {
+              temperature: isExtraction ? 0.1 : 0.7, // Low temp for extraction accuracy
+              num_predict: 2048
+          }
         })
       }
     );
 
     if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Ollama Error Response:", errorText);
         throw new Error(`Ollama error: ${response.statusText}`);
     }
 
     const data = await response.json();
+    console.log("AI Response received successfully.");
 
     res.json({
       reply: data.response
